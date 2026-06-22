@@ -1,1 +1,58 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <dirent.h>
 
+int main() {
+
+    int fd;
+
+    fd = open("test.txt", O_CREAT | O_RDWR, 0777);
+
+    write(fd, "Operating System Lab", 20);
+
+    // lseek
+    lseek(fd, 0, SEEK_SET);
+
+    char buffer[50];
+
+    read(fd, buffer, 20);
+
+    buffer[20] = '\0';
+
+    printf("File Content: %s\n", buffer);
+
+    // fcntl
+    int flags = fcntl(fd, F_GETFL);
+
+    printf("File Flags: %d\n", flags);
+
+    // stat
+    struct stat fileStat;
+
+    stat("test.txt", &fileStat);
+
+    printf("File Size: %ld bytes\n", fileStat.st_size);
+
+    close(fd);
+
+    // opendir and readdir
+    DIR *dir;
+    struct dirent *entry;
+
+    dir = opendir(".");
+
+    if (dir != NULL) {
+
+        printf("\nDirectory Contents:\n");
+
+        while ((entry = readdir(dir)) != NULL) {
+            printf("%s\n", entry->d_name);
+        }
+
+        closedir(dir);
+    }
+
+    return 0;
+}
