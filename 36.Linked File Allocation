@@ -1,1 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+struct Block {
+    char data[256];
+    struct Block *next;
+};
+
+int main() {
+
+    struct Block *firstBlock = NULL;
+    struct Block *lastBlock = NULL;
+
+    int blockCount = 0;
+    int blockNumber;
+    char data[256];
+    char choice;
+
+    printf("Linked Allocation Simulation\n");
+
+    while (1) {
+
+        printf("\nEnter W-Write, R-Read, Q-Quit : ");
+        scanf(" %c", &choice);
+
+        if (choice == 'Q' || choice == 'q')
+            break;
+
+        if (choice == 'W' || choice == 'w') {
+
+            printf("Enter block data : ");
+            scanf(" %[^\n]", data);
+
+            struct Block *newBlock =
+                (struct Block *)malloc(sizeof(struct Block));
+
+            strcpy(newBlock->data, data);
+            newBlock->next = NULL;
+
+            if (firstBlock == NULL) {
+                firstBlock = lastBlock = newBlock;
+            } else {
+                lastBlock->next = newBlock;
+                lastBlock = newBlock;
+            }
+
+            blockCount++;
+        }
+
+        else if (choice == 'R' || choice == 'r') {
+
+            printf("Enter block number (1-%d): ", blockCount);
+            scanf("%d", &blockNumber);
+
+            if (blockNumber < 1 || blockNumber > blockCount) {
+                printf("Invalid Block Number\n");
+            } else {
+
+                struct Block *current = firstBlock;
+
+                for (int i = 1; i < blockNumber; i++)
+                    current = current->next;
+
+                printf("Block Data : %s\n", current->data);
+            }
+        }
+    }
+
+    return 0;
+}
